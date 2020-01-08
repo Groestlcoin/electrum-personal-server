@@ -2,6 +2,7 @@ from electrumpersonalserver.bitcoin.main import *
 import hmac
 import hashlib
 from binascii import hexlify
+from groestlcoin_hash import getHash
 
 # Below code ASSUMES binary inputs and compressed pubkeys
 MAINNET_PRIVATE = b'\x04\x88\xAD\xE4'
@@ -64,12 +65,12 @@ def bip32_serialize(rawtuple):
     keydata = b'\x00' + key[:-1] if vbytes in PRIVATE else key
     bindata = vbytes + from_int_to_byte(
         depth % 256) + fingerprint + i + chaincode + keydata
-    return changebase(bindata + bin_dbl_sha256(bindata)[:4], 256, 58)
+    return changebase(bindata + bin_groestl(bindata)[:4], 256, 58)
 
 
 def bip32_deserialize(data):
     dbin = changebase(data, 58, 256)
-    if bin_dbl_sha256(dbin[:-4])[:4] != dbin[-4:]:
+    if bin_groestl(dbin[:-4])[:4] != dbin[-4:]:
         raise Exception("Invalid checksum")
     vbytes = dbin[0:4]
     depth = from_byte_to_int(dbin[4])

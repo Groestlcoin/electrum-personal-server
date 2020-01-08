@@ -185,7 +185,7 @@ def txhash(tx, hashcode=None):
         return dbl_sha256(from_string_to_bytes(tx) + encode(
             int(hashcode), 256, 4)[::-1])
     else:
-        return safe_hexlify(bin_dbl_sha256(tx)[::-1])
+        return safe_hexlify(bin_sha256(tx)[::-1])
 
 
 def bin_txhash(tx, hashcode=None):

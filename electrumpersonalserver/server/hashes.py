@@ -2,6 +2,7 @@
 import hashlib
 import binascii
 import math
+import groestlcoin_hash
 
 ## stuff copied from electrum's source
 
@@ -59,6 +60,10 @@ def hash_merkle_root(merkle_s, target_hash, pos):
         h = Hash(hash_decode(item) + h) if ((pos >> i) & 1) else Hash(
             h + hash_decode(item))
     return hash_encode(h)
+
+def groestlHash(x: bytes) -> bytes:
+    x = to_bytes(x, 'utf8')
+    return groestlcoin_hash.getHash(x, len(x))
 
 def hash_160(public_key):
     try:

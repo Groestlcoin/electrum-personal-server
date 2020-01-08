@@ -3,6 +3,7 @@ from .py2specials import *
 from .py3specials import *
 import binascii
 import hashlib
+import groestlcoin_hash
 import re
 import sys
 import os
@@ -359,10 +360,22 @@ def bin_dbl_sha256(s):
     bytes_to_hash = from_string_to_bytes(s)
     return hashlib.sha256(hashlib.sha256(bytes_to_hash).digest()).digest()
 
+def bin_groestl(s):
+    bytes_to_hash = from_string_to_bytes(s)
+    return groestlcoin_hash.getHash(bytes_to_hash, len(bytes_to_hash))
+
+def bin_sha256(s):
+    bytes_to_hash = from_string_to_bytes(s)
+    return hashlib.sha256(bytes_to_hash).digest()
 
 def dbl_sha256(string):
     return safe_hexlify(bin_dbl_sha256(string))
 
+def single_sha256(string):
+    return safe_hexlify(bin_sha256(string))
+
+def dbl_groestl(string):
+    return safe_hexlify(bin_groestl(string))
 
 def bin_slowsha(string):
     string = from_string_to_bytes(string)
@@ -392,23 +405,23 @@ def num_to_var_int(x):
 
 # WTF, Electrum?
 def electrum_sig_hash(message):
-    padded = b"\x18Bitcoin Signed Message:\n" + num_to_var_int(len(
+    padded = b"\x1CGroestlcoin Signed Message:\n" + num_to_var_int(len(
         message)) + from_string_to_bytes(message)
-    return bin_dbl_sha256(padded)
+    return bin_groestl(padded)
 
 # Encodings
 
 def b58check_to_bin(inp):
     leadingzbytes = len(re.match('^1*', inp).group(0))
     data = b'\x00' * leadingzbytes + changebase(inp, 58, 256)
-    assert bin_dbl_sha256(data[:-4])[:4] == data[-4:]
+    assert bin_groestl(data[:-4])[:4] == data[-4:]
     return data[1:-4]
 
 
 def get_version_byte(inp):
     leadingzbytes = len(re.match('^1*', inp).group(0))
     data = b'\x00' * leadingzbytes + changebase(inp, 58, 256)
-    assert bin_dbl_sha256(data[:-4])[:4] == data[-4:]
+    assert bin_groestl(data[:-4])[:4] == data[-4:]
     return ord(data[0])
 
 

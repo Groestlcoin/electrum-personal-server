@@ -41,7 +41,7 @@ if sys.version_info.major == 2:
     def bin_to_b58check(inp, magicbyte=0):
         inp_fmtd = chr(int(magicbyte)) + inp
         leadingzbytes = len(re.match('^\x00*', inp_fmtd).group(0))
-        checksum = bin_dbl_sha256(inp_fmtd)[:4]
+        checksum = bin_groestl(inp_fmtd)[:4]
         return '1' * leadingzbytes + changebase(inp_fmtd + checksum, 256, 58)
 
     def bytes_to_hex_string(b):

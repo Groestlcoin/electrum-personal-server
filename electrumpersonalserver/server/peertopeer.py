@@ -240,7 +240,7 @@ class P2PProtocol(object):
                                     >= payload_length):
                                 payload = recv_buffer[:payload_length]
                                 recv_buffer = recv_buffer[payload_length:]
-                                if btc.bin_dbl_sha256(payload)[:4] == checksum:
+                                if btc.bin_groestl(payload)[:4] == checksum:
                                     self.p2p_message_handler.handle_message(
                                         self, command, payload_length, payload)
                                 else:

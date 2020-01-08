@@ -8,7 +8,7 @@ setup(
     license="MIT",
     include_package_data=True,
     packages=find_packages(exclude=["tests"]),
-    setup_requires=["pytest-runner"],
+    setup_requires=["groestlcoin_hash", "pytest-runner"],
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
