@@ -9,7 +9,7 @@ And thanks to everyone else who contributed via discussion and donations
   along with the first three.
 * Add bandwidth usage per day and blockchain size to the server banner
 * Support using `vsize` instead of `size` for the mempool calculation, which is
-  the correct behaviour for Bitcoin Core 0.19
+  the correct behaviour for Groestlcoin Core 2.19.1
 * Allow rescan date to also be passed via CLI args. Wait for any rescanning to
   finish on startup. This allows Electrum Personal Server to be more easily
   used with scripting.
@@ -62,7 +62,7 @@ Bugfix release
 
 * Used 127.0.0.1 instead of localhost to help improve windows support
 * Fixed crash bug if the client requests an out-of-range header
-* Supported Bitcoin Core 0.17 which deprecates accounts
+* Supported Groestlcoin Core 2.17.2 which deprecates accounts
 
 
 # Release v0.1.3 - (4th July 2018)
@@ -105,7 +105,7 @@ Bugfix release, thanks to
 
 Released first beta version.
 
-* Merkle proofs supported using bitcoind's `gettxoutproof` RPC call.
+* Merkle proofs supported using groestlcoind's `gettxoutproof` RPC call.
 * Deterministic wallets implemented which support all Electrum master public
   key formats.
 * Created rescan script which allows rescanning from a given block height
@@ -120,14 +120,14 @@ Released first beta version.
   used for bip32 support for deterministic wallets. Bech32 addresses now
   supported.
 * RPC auth details can be obtained from the .cookie file.
-* Bitcoin Core's multi-wallet feature supported.
+* Groestlcoin Core's multi-wallet feature supported.
 
 
 # Alpha release - (8th Feb 2018)
 
-Released first alpha version which builds address history from bitcoin'd
+Released first alpha version which builds address history from groestlcoin'd
 wallet, monitors addresses for new transactions and accepts connections from
-Electrum wallet.
+Electrum-GRS wallet.
 
 -----------------------------------------------------
 Groestlcoin Releases

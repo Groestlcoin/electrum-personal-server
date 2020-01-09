@@ -3,13 +3,13 @@
 
 [Unit]
 Description=Electrum Personal Server
-After=bitcoind.service
-Requires=bitcoind.service
+After=groestlcoind.service
+Requires=groestlcoind.service
 
 [Service]
 ExecStart=/your-installation-path/server.py /your-workding-dir [optional arguments]
-User=bitcoin
-Group=bitcoin
+User=groestlcoin
+Group=groestlcoin
 Type=simple
 Restart=on-failure
 RestartSec=60

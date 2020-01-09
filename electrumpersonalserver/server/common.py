@@ -74,7 +74,7 @@ def create_server_socket(hostport):
     server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_sock.bind(hostport)
     server_sock.listen(1)
-    logger.info("Listening for Electrum Wallet on " + str(hostport))
+    logger.info("Listening for Electrum-GRS Wallet on " + str(hostport))
     return server_sock
 
 def run_electrum_server(rpc, txmonitor, config):
@@ -91,9 +91,9 @@ def run_electrum_server(rpc, txmonitor, config):
             ip_whitelist.append(ip_network("::0/0"))
         else:
             ip_whitelist.append(ip_network(ip, strict=False))
-    poll_interval_listening = int(config.get("bitcoin-rpc",
+    poll_interval_listening = int(config.get("groestlcoin-rpc",
         "poll_interval_listening"))
-    poll_interval_connected = int(config.get("bitcoin-rpc",
+    poll_interval_connected = int(config.get("groestlcoin-rpc",
         "poll_interval_connected"))
     certfile, keyfile = get_certs(config)
     disable_mempool_fee_histogram = config.getboolean("electrum-server",
@@ -161,7 +161,7 @@ def run_electrum_server(rpc, txmonitor, config):
                     on_heartbeat_connected(rpc, txmonitor, protocol)
         except (IOError, EOFError) as e:
             if isinstance(e, (EOFError, ConnectionRefusedError)):
-                logger.info("Electrum wallet disconnected")
+                logger.info("Electrum-GRS wallet disconnected")
             else:
                 logger.error("IOError: " + repr(e))
             try:
@@ -181,7 +181,7 @@ def get_scriptpubkeys_to_monitor(rpc, config):
             [transactionmonitor.ADDRESSES_LABEL]))
         logger.debug("using deprecated accounts interface")
     except JsonRpcError:
-        #bitcoin core 2.17.2 deprecates accounts, replaced with labels
+        #groestlcoin core 2.17.2 deprecates accounts, replaced with labels
         if transactionmonitor.ADDRESSES_LABEL in rpc.call("listlabels", []):
             imported_addresses = set(rpc.call("getaddressesbylabel",
                 [transactionmonitor.ADDRESSES_LABEL]).keys())
@@ -194,7 +194,7 @@ def get_scriptpubkeys_to_monitor(rpc, config):
     for key in config.options("master-public-keys"):
         wal = deterministicwallet.parse_electrum_master_public_key(
             config.get("master-public-keys", key),
-            int(config.get("bitcoin-rpc", "gap_limit")))
+            int(config.get("groestlcoin-rpc", "gap_limit")))
         deterministic_wallets.append(wal)
 
     #check whether these deterministic wallets have already been imported
@@ -211,16 +211,16 @@ def get_scriptpubkeys_to_monitor(rpc, config):
         first_addrs = [hashes.script_to_address(s, rpc) for s in first_spks]
         logger.info("\n" + config_mpk_key + " =>\n\t" + "\n\t".join(
             first_addrs))
-        last_spk = wal.get_scriptpubkeys(0, int(config.get("bitcoin-rpc",
+        last_spk = wal.get_scriptpubkeys(0, int(config.get("groestlcoin-rpc",
             "initial_import_count")) - 1, 1)
-        last_addr = [hashes.script_to_address(last_spk[0], rpc)] 
+        last_addr = [hashes.script_to_address(last_spk[0], rpc)]
         if not set(first_addrs + last_addr).issubset(imported_addresses):
             import_needed = True
             wallets_imported += 1
             for change in [0, 1]:
                 spks_to_import.extend(wal.get_scriptpubkeys(change, 0,
-                    int(config.get("bitcoin-rpc", "initial_import_count"))))
-    logger.info("Obtaining bitcoin addresses to monitor . . .")
+                    int(config.get("groestlcoin-rpc", "initial_import_count"))))
+    logger.info("Obtaining groestlcoin addresses to monitor . . .")
     #check whether watch-only addresses have been imported
     watch_only_addresses = []
     for key in config.options("watch-only-addresses"):
@@ -261,7 +261,7 @@ def get_scriptpubkeys_to_monitor(rpc, config):
     for wal in deterministic_wallets:
         for change in [0, 1]:
             spks_to_monitor.extend(wal.get_scriptpubkeys(change, 0,
-                int(config.get("bitcoin-rpc", "initial_import_count"))))
+                int(config.get("groestlcoin-rpc", "initial_import_count"))))
             #loop until one address found that isnt imported
             while True:
                 spk = wal.get_new_scriptpubkeys(change, count=1)[0]
@@ -372,19 +372,19 @@ def main():
     logger.info('Starting Electrum Personal Server')
     logger.info('Logging to ' + logfilename)
     try:
-        rpc_u = config.get("bitcoin-rpc", "rpc_user")
-        rpc_p = config.get("bitcoin-rpc", "rpc_password")
+        rpc_u = config.get("groestlcoin-rpc", "rpc_user")
+        rpc_p = config.get("groestlcoin-rpc", "rpc_password")
         logger.debug("obtaining auth from rpc_user/pass")
     except NoOptionError:
         rpc_u, rpc_p = obtain_rpc_username_password(config.get(
-            "bitcoin-rpc", "datadir"))
+            "groestlcoin-rpc", "datadir"))
         logger.debug("obtaining auth from .cookie")
     if rpc_u == None:
         return
-    rpc = JsonRpc(host = config.get("bitcoin-rpc", "host"),
-        port = int(config.get("bitcoin-rpc", "port")),
+    rpc = JsonRpc(host = config.get("groestlcoin-rpc", "host"),
+        port = int(config.get("groestlcoin-rpc", "port")),
         user = rpc_u, password = rpc_p,
-        wallet_filename=config.get("bitcoin-rpc", "wallet_filename").strip(),
+        wallet_filename=config.get("groestlcoin-rpc", "wallet_filename").strip(),
         logger=logger)
 
     #TODO somewhere here loop until rpc works and fully sync'd, to allow
@@ -397,7 +397,7 @@ def main():
             bestblockhash[0] = rpc.call("getbestblockhash", [])
         except JsonRpcError as e:
             if not printed_error_msg:
-                logger.error("Error with bitcoin json-rpc: " + repr(e))
+                logger.error("Error with groestlcoin json-rpc: " + repr(e))
                 printed_error_msg = True
             time.sleep(5)
     try:
@@ -405,7 +405,7 @@ def main():
     except JsonRpcError as e:
         logger.error(repr(e))
         logger.error("Wallet related RPC call failed, possibly the " +
-            "bitcoin node was compiled with the disable wallet flag")
+            "groestlcoin node was compiled with the disable wallet flag")
         return
     if opts.rescan:
         rescan_script(logger, rpc, opts.rescan_date)
@@ -449,7 +449,7 @@ def search_for_block_height_of_date(datestr, rpc):
         return -1
     genesis_block = rpc.call("getblockheader", [rpc.call("getblockhash", [0])])
     if target_time < datetime.datetime.fromtimestamp(genesis_block["time"]):
-        logger.warning("date is before the creation of bitcoin")
+        logger.warning("date is before the creation of groestlcoin")
         return 0
     first_height = 0
     last_height = best_head["height"]
@@ -485,7 +485,7 @@ def rescan_script(logger, rpc, rescan_date):
         if input("Rescan from block height " + str(height) + " ? (y/n):") \
                 != 'y':
             return
-    logger.info("Rescanning. . . for progress indicator see the bitcoin node's"
+    logger.info("Rescanning. . . for progress indicator see the groestlcoin node's"
         + " debug.log file")
     rpc.call("rescanblockchain", [height])
     logger.info("end")
@@ -508,21 +508,20 @@ def rescan_main():
     logger.warning("The seperate rescan script is deprecated, use " +
         "`electrum-personal-server --rescan` instead.")
     try:
-        rpc_u = config.get("bitcoin-rpc", "rpc_user")
-        rpc_p = config.get("bitcoin-rpc", "rpc_password")
+        rpc_u = config.get("groestlcoin-rpc", "rpc_user")
+        rpc_p = config.get("groestlcoin-rpc", "rpc_password")
     except NoOptionError:
         rpc_u, rpc_p = obtain_rpc_username_password(config.get(
-            "bitcoin-rpc", "datadir"))
+            "groestlcoin-rpc", "datadir"))
     if rpc_u == None:
         return
-    rpc = JsonRpc(host = config.get("bitcoin-rpc", "host"),
-        port = int(config.get("bitcoin-rpc", "port")),
+    rpc = JsonRpc(host = config.get("groestlcoin-rpc", "host"),
+        port = int(config.get("groestlcoin-rpc", "port")),
         user = rpc_u, password = rpc_p,
-        wallet_filename=config.get("bitcoin-rpc", "wallet_filename").strip())
+        wallet_filename=config.get("groestlcoin-rpc", "wallet_filename").strip())
     rescan_script(logger, rpc)
 
 if __name__ == "__main__":
     #entry point for pyinstaller executable
     main()
     os.system("pause")
-

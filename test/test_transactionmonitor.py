@@ -14,9 +14,9 @@ logger.setLevel(logging.DEBUG)
 
 class DummyJsonRpc(object):
     """
-    Electrum Personal Server gets all its information about the bitcoin network
+    Electrum Personal Server gets all its information about the groestlcoin network
     from the json-rpc interface. This dummy interface is used for simulating
-    events in bitcoin
+    events in groestlcoin
     """
     def __init__(self, txlist, utxoset, block_heights):
         self.txlist = txlist
@@ -632,4 +632,3 @@ def test_single_tx_no_address_key():
     assert len(txmonitor.address_history) == 1
     assert_address_history_tx(txmonitor.address_history, spk=dummy_spk,
         height=containing_block_height, txid=dummy_tx["txid"], subscribed=False)
-

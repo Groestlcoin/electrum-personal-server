@@ -42,7 +42,7 @@ reasoning for your decisions. Further explanation
 
 Electrum Personal Server also works on [testnet](https://en.bitcoin.it/wiki/Testnet)
 and [regtest](https://bitcoin.org/en/glossary/regression-test-mode). The
-Electrum wallet can be started in testnet mode with the command line flag
+Electrum-GRS wallet can be started in testnet mode with the command line flag
 `--testnet` or `--regtest`.
 
 pytest is used for automated testing. On Debian-like systems install with
@@ -71,4 +71,3 @@ Pyinstaller is used to create the packaged binary releases. To build run:
 This is best done on a virtual machine with the target OS installed. The
 `cert/` directory needs to be copied and for windows its helpful to run
 `unix2dos config.ini_sample` to convert the line endings.
-

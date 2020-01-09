@@ -4,7 +4,7 @@ setup(
     name="electrum-personal-server",
     version="0.2.0.dev0",
     description="Electrum Personal Server",
-    author="Chris Belcher",
+    author="Groestlcoin Developers",
     license="MIT",
     include_package_data=True,
     packages=find_packages(exclude=["tests"]),

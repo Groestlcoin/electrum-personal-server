@@ -14,18 +14,18 @@ from electrumpersonalserver.server.hashes import (
     script_to_address
 )
 
-#internally this code uses scriptPubKeys, it only converts to bitcoin addresses
-# when importing to bitcoind or checking whether enough addresses have been
+#internally this code uses scriptPubKeys, it only converts to groestlcoin addresses
+# when importing to groestlcoind or checking whether enough addresses have been
 # imported
 #the electrum protocol uses sha256(scriptpubkey) as a key for lookups
 # this code calls them scripthashes
 
 #code will generate the first address from each deterministic wallet
-# and check whether they have been imported into the bitcoin node
+# and check whether they have been imported into the groestlcoin node
 # if no then initial_import_count addresses will be imported, then exit
 # if yes then initial_import_count addresses will be generated and extra
 # addresses will be generated one-by-one, each time checking whether they have
-# been imported into the bitcoin node
+# been imported into the groestlcoin node
 # when an address has been reached that has not been imported, that means
 # we've reached the end, then rewind the deterministic wallet index by one
 
@@ -56,7 +56,7 @@ def import_addresses(rpc, addrs, logger=None):
 
 class TransactionMonitor(object):
     """
-    Class which monitors the bitcoind wallet for new transactions
+    Class which monitors the groestlcoind wallet for new transactions
     and builds a history datastructure for sending to electrum
     """
     def __init__(self, rpc, deterministic_wallets, logger=None):
@@ -429,7 +429,7 @@ class TransactionMonitor(object):
 
     def check_for_new_txes(self):
         logger = self.logger
-        MAX_TX_REQUEST_COUNT = 256 
+        MAX_TX_REQUEST_COUNT = 256
         tx_request_count = 2
         max_attempts = int(math.log(MAX_TX_REQUEST_COUNT, 2))
         for i in range(max_attempts):
@@ -522,4 +522,3 @@ class TransactionMonitor(object):
                 self.reorganizable_txes.append((tx["txid"], tx["blockhash"],
                     new_history_element["height"], matching_scripthashes))
         return set(updated_scripthashes)
-

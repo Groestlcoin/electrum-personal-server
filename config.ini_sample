@@ -19,16 +19,16 @@
 #multisig_wallet = 2 xpub661MyMwAqRbcFseXCwRdRVkhVuzEiskg4QUp5XpUdNf2uGXvQmnD4zcofZ1MN6Fo8PjqQ5cemJQ39f7RTwDVVputHMFjPUn8VRp2pJQMgEF xpub661MyMwAqRbcFseXCwRdRVkhVuzEiskg4QUp5XpUdNf2uGXvQmnD4zcofZ1MN6Fo8PjqQ5cemJQ39f7RTwDVVputHMFjPUn8VRp2pJQMgEF xpub661MyMwAqRbcFseXCwRdRVkhVuzEiskg4QUp5XpUdNf2uGXvQmnD4zcofZ1MN6Fo8PjqQ5cemJQ39f7RTwDVVputHMFjPUn8VRp2pJQMgEF
 
 
-[bitcoin-rpc]
+[groestlcoin-rpc]
 host = 127.0.0.1
-port = 8332
-#add the bitcoin datadir to search for the .cookie file created by the
+port = 1441
+#add the groestlcoin datadir to search for the .cookie file created by the
 # node, which avoids the need to configure rpc_user/pass
 #leave this option empty to have it look in the default location
-datadir = 
+#datadir =
 #if you dont want to use the .cookie method with datadir, uncomment to config u/p here
-#rpc_user =
-#rpc_password =
+rpc_user = foo
+rpc_password = bar
 
 #to be used with the multi-wallet feature
 # see https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.15.0.md#multi-wallet-support
@@ -86,7 +86,7 @@ tor_port = 9050
 
 # = Notes on tor broadcasting =
 # If using tor broadcasting, make sure you set `walletbroadcast=0` in
-#  your bitcoin.conf file
+#  your groestlcoin.conf file
 # If your full node is connected to the internet only via tor then you dont
 #  need separate tor broadcasting
 
@@ -96,10 +96,10 @@ tor_port = 9050
 #Dont use this section for adding entire wallets, instead use the
 # above section `master-public-keys`
 
-#addr = 1DuqpoeTB9zLvVCXQG53VbMxvMkijk494n
+#addr = FnU7wqNKis8cEx4PWAbJtyXCHtZfQK5ijH
 
 # A space separated list is also accepted
-#my_test_addresses = 3Hh7QujVLqz11tiQsnUE5CSL16WEHBmiyR 1PXRLo1FQoZyF1Jhnz4qbG5x8Bo3pFpybz bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq
+#my_test_addresses = 3Kf4LKEgsXMyKt7jPo5nEKD8PzFzkhuxU6 FnU7wqNKis8cEx4PWAbJtyXCHtZfQK5ijH grs1qus9swt9x3rkju5hdwnuxnav053ttz2f3wqu2gz
 
 # multiple addresses may also be added in separate lines (like master public keys above)
 #addr2 = 3anotheraddress
@@ -122,4 +122,3 @@ append_log = false
 # Format to use for logging messages
 #see docs https://docs.python.org/3/library/logging.html#formatter-objects
 log_format = %(levelname)s:%(asctime)s: %(message)s
-

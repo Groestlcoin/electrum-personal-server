@@ -108,7 +108,7 @@ def bip32_bin_extract_key(data):
 def bip32_extract_key(data):
     return safe_hexlify(bip32_deserialize(data)[-1])
 
-# Exploits the same vulnerability as above in Electrum wallets
+# Exploits the same vulnerability as above in Electrum-GRS wallets
 # Takes a BIP32 pubkey and one of the child privkeys of its corresponding
 # privkey and returns the BIP32 privkey associated with that pubkey
 
@@ -180,4 +180,3 @@ def electrum_pubkey(masterkey, n, for_change=0):
     offset = bin_dbl_sha256(from_int_representation_to_bytes(n)+b':'+
         from_int_representation_to_bytes(for_change)+b':'+bin_mpk)
     return add_pubkeys('04'+mpk, privtopub(offset))
-
