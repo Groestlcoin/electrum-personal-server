@@ -127,7 +127,7 @@ def run_electrum_server(rpc, txmonitor, config):
                 except (ConnectionRefusedError, ssl.SSLError):
                     sock.close()
                     sock = None
-            logger.info('Electrum connected from ' + str(addr[0]))
+            logger.info('Electrum-GRS connected from ' + str(addr[0]))
 
             def send_reply_fun(reply):
                 line = json.dumps(reply)
