@@ -77,7 +77,7 @@ disable_mempool_fee_histogram = false
 # * tor              (broadcast to random nodes over tor)
 # * system <cmd> %s  (save transaction to file, and invoke system command
 #                     with file path as parameter %s)
-broadcast_method = tor-or-own-node
+broadcast_method = own-node
 
 # For tor broadcasting (broadcast_method = tor) configure
 # the tor proxy host and port below
