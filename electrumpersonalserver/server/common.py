@@ -181,7 +181,7 @@ def get_scriptpubkeys_to_monitor(rpc, config):
             [transactionmonitor.ADDRESSES_LABEL]))
         logger.debug("using deprecated accounts interface")
     except JsonRpcError:
-        #bitcoin core 0.17 deprecates accounts, replaced with labels
+        #bitcoin core 2.17.2 deprecates accounts, replaced with labels
         if transactionmonitor.ADDRESSES_LABEL in rpc.call("listlabels", []):
             imported_addresses = set(rpc.call("getaddressesbylabel",
                 [transactionmonitor.ADDRESSES_LABEL]).keys())
@@ -246,7 +246,7 @@ def get_scriptpubkeys_to_monitor(rpc, config):
         #TODO minus imported_addresses
         logger.info("Importing " + str(wallets_imported) + " wallets and " +
             str(len(watch_only_addresses_to_import)) + " watch-only " +
-            "addresses into the Bitcoin node")
+            "addresses into the Groestlcoin node")
         time.sleep(5)
         return (True, addresses_to_import + list(
             watch_only_addresses_to_import), None)
@@ -305,12 +305,12 @@ def obtain_rpc_username_password(datadir):
         systemname = platform.system()
         #paths from https://en.bitcoin.it/wiki/Data_directory
         if systemname == "Linux":
-            datadir = os.path.expanduser("~/.bitcoin")
+            datadir = os.path.expanduser("~/.groestlcoin")
         elif systemname == "Windows":
-            datadir = os.path.expandvars("%APPDATA%\Bitcoin")
+            datadir = os.path.expandvars("%APPDATA%\Groestlcoin")
         elif systemname == "Darwin": #mac os
             datadir = os.path.expanduser(
-                "~/Library/Application Support/Bitcoin/")
+                "~/Library/Application Support/Groestlcoin/")
     cookie_path = os.path.join(datadir, ".cookie")
     if not os.path.exists(cookie_path):
         logger.warning("Unable to find .cookie file, try setting `datadir`" +
