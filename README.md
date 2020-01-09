@@ -7,7 +7,7 @@ full node.
 It is an implementation of the Electrum server protocol which fulfills the
 specific need of using the Electrum wallet backed by a full node, but without
 the heavyweight server backend, for a single user. It allows the user to
-benefit from all of Bitcoin Core's resource-saving features like
+benefit from all of Groestlcoin Core's resource-saving features like
 [pruning](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.12.0.md#wallet-pruning),
 [blocksonly](https://bitcointalk.org/index.php?topic=1377345.0) and disabled
 txindex. All of Electrum's feature-richness like hardware wallet integration,
@@ -42,10 +42,10 @@ on [full nodes](https://en.bitcoin.it/wiki/Full_node).
 
 ## How To
 
-* If you dont already have them, download and install Bitcoin Core version 0.17
+* If you dont already have them, download and install Groestlcoin Core version 2.17.2
   or higher. Make sure you
   [verify the digital signatures](https://bitcoin.stackexchange.com/questions/50185/how-to-verify-bitcoin-core-release-signing-keys)
-  of any binaries before running them, or compile from source. The Bitcoin node
+  of any binaries before running them, or compile from source. The Groestlcoin node
   must have wallet enabled, and must have the RPC server switched on (`server=1`
   in bitcoin.conf). On first run, it is recommended to create a wallet dedicated
   to Electrum Personal Server using the command line argument
@@ -74,7 +74,7 @@ on [full nodes](https://en.bitcoin.it/wiki/Full_node).
       wallet1 = xpub661MyMwAqRbcF...
       wallet2 = xpub7712KLsfsg46G...
 
-* If you created a wallet dedicated to Electrum Personal Server in Bitcoin Core,
+* If you created a wallet dedicated to Electrum Personal Server in Groestlcoin Core,
   you have to modify the line `wallet_filename` in the `[bitcoin-rpc]` section 
   with the name of the  wallet, for example `electrumpersonalserver`.
 
@@ -91,7 +91,7 @@ on [full nodes](https://en.bitcoin.it/wiki/Full_node).
   to start Electrum Personal Server.
 
 * The first time the server is run it will import all configured addresses as
-  watch-only into the Bitcoin node, and then exit.
+  watch-only into the Groestlcoin node, and then exit.
   If the wallets contain historical transactions you can use the rescan script
   (`electrum-personal-server --rescan /path/to/config.ini`) to make them appear.
   If using the windows packaged binary release build then drag the file
@@ -122,7 +122,7 @@ default transactions will be broadcast through tor. If running tor, also set
 `walletbroadcast=0` in your `bitcoin.conf`. This prevents the wallet from
 rebroadcasting transactions without tor.
 
-#### Quick start on a Debian/Ubuntu machine with a running Bitcoin full node
+#### Quick start on a Debian/Ubuntu machine with a running Groestlcoin full node
 1. Download the [latest release](https://github.com/chris-belcher/electrum-personal-server/releases)
 of Electrum Personal Server. (Not the Windows version, the "Source code" zip or
 tar.gz.)
@@ -188,7 +188,7 @@ we'd like to avoid with Electrum Personal Server.
 
 Definitely check out implementations like [ElectrumX](https://github.com/kyuupichan/electrumx/) if you're interested in this sort of thing.
 
-#### Bitcoin without internet access
+#### Groestlcoin without internet access
 
 Electrum Personal Server can also be used as a building block for systems which
 use bitcoin over mesh networks and satellites instead of connecting the

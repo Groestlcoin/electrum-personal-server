@@ -25,14 +25,14 @@ SERVER_VERSION_NUMBER = "0.2.0"
 SERVER_PROTOCOL_VERSION_MAX = 1.4
 SERVER_PROTOCOL_VERSION_MIN = 1.1
 
-DONATION_ADDR = "bc1q5d8l0w33h65e2l5x7ty6wgnvkvlqcz0wfaslpz"
+DONATION_ADDR = "grs1qzqcdyjcsnplrlayy47llkx0s46uyytrmc28apt"
 
 BANNER = \
 """Welcome to Electrum Personal Server {serverversion}
 
 Monitoring {detwallets} deterministic wallets, in total {addr} addresses.
 
-Connected bitcoin node: {useragent}
+Connected groestlcoin node: {useragent}
 Uptime: {uptime}
 Peers: {peers}
 Download: {recvbytes} ({recvbytesperday} per day)
@@ -41,7 +41,7 @@ Blocksonly: {blocksonly}
 Pruning: {pruning}
 Blockchain size: {blockchainsizeondisk}
 {firstunprunedblock}
-https://github.com/chris-belcher/electrum-personal-server
+https://github.com/Groestlcoin/electrum-personal-server
 
 Donate to help make Electrum Personal Server even better:
 {donationaddr}

@@ -13,7 +13,7 @@ class JsonRpcConnectionError(JsonRpcError): pass
 class JsonRpc(object):
     """
     Simple implementation of a JSON-RPC client that is used
-    to connect to Bitcoin.
+    to connect to Groestlcoin.
     """
     def __init__(self, host, port, user, password, wallet_filename="",
             logger=None):

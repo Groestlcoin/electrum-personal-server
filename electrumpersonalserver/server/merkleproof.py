@@ -92,7 +92,7 @@ def expand_tree_hashing(node):
     return hash_encode(Hash(hash_decode(hash_left) + hash_decode(hash_right)))
 
 def convert_core_to_electrum_merkle_proof(proof):
-    """Bitcoin Core and Electrum use different formats for merkle
+    """Groestlcoin Core and Electrum use different formats for merkle
        proof, this function converts from Core's format to Electrum's format"""
     proof = binascii.unhexlify(proof)
     pos = [0]

@@ -129,3 +129,8 @@ Released first alpha version which builds address history from bitcoin'd
 wallet, monitors addresses for new transactions and accepts connections from
 Electrum wallet.
 
+-----------------------------------------------------
+Groestlcoin Releases
+
+# Alpha Release
+Works with Groestlcoin Core 2.17.2 and Electrum-GRS

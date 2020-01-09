@@ -17,7 +17,7 @@ from electrumpersonalserver.server.socks import (
 from electrumpersonalserver.server.jsonrpc import JsonRpcError
 
 PROTOCOL_VERSION = 70015
-DEFAULT_USER_AGENT = '/Satoshi:0.18.0/'
+DEFAULT_USER_AGENT = '/Groestlcoin:2.17.2/'
 
 #https://github.com/bitcoin/bitcoin/blob/master/src/protocol.h
 NODE_NETWORK = 1
@@ -175,7 +175,7 @@ class P2PProtocol(object):
         elif network == "regtest":
             self.magic = 0xdab5bffa
         else:
-            self.magic = 0xd9b4bef9
+            self.magic = 0xd4b4bef9
         self.closed = False
 
     def run(self):
@@ -194,7 +194,7 @@ class P2PProtocol(object):
                            + pack('<I', self.start_height)
                            + b'\x01')
 
-        self.logger.debug('Connecting to bitcoin peer at ' +
+        self.logger.debug('Connecting to groestlcoin peer at ' +
                 str(self.remote_hostport) + ' with proxy ' +
                 str(self.socks5_hostport))
         setdefaultproxy(PROXY_TYPE_SOCKS5, self.socks5_hostport[0],
@@ -204,7 +204,7 @@ class P2PProtocol(object):
         self.sock.connect(self.remote_hostport)
         self.sock.sendall(self.create_message('version', version_message))
 
-        self.logger.debug('Connected to bitcoin peer')
+        self.logger.debug('Connected to groestlcoin peer')
         self.sock.settimeout(self.heartbeat_interval)
         self.closed = False
         try:
@@ -377,7 +377,7 @@ def tor_broadcast_tx(txhex, tor_hostport, network, rpc, logger):
                 [3*required_address_count//2])
         except JsonRpcError as e:
             logger.debug(repr(e))
-            logger.error("Bitcoin Core v0.18.0 or higher is required "
+            logger.error("Groestlcoin Core v2.18.0 or higher is required "
                 "to broadcast through Tor")
             return False
         node_addrs_witness.extend(
