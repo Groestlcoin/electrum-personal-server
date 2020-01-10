@@ -3,3 +3,6 @@
 config.ini*
 .cache/
 .pytest_cache/
+build/
+dist/
+*.zip
