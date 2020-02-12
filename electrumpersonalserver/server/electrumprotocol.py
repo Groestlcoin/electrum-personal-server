@@ -5,6 +5,7 @@ import binascii
 import os
 import struct
 import tempfile
+import socket
 from collections import defaultdict
 
 from electrumpersonalserver.server.hashes import (
@@ -13,6 +14,7 @@ from electrumpersonalserver.server.hashes import (
     bytes_fmt
 )
 from .jsonrpc import JsonRpc, JsonRpcError
+from electrumpersonalserver.server.peertopeer import tor_broadcast_tx
 from electrumpersonalserver.server.merkleproof import (
     convert_core_to_electrum_merkle_proof
 )
@@ -47,6 +49,25 @@ Donate to help make Electrum Personal Server even better:
 {donationaddr}
 
 """
+
+def get_tor_hostport():
+    # Probable ports for Tor to listen at
+    host = "127.0.0.1"
+    ports = [9050, 9150]
+    for port in ports:
+        try:
+            s = (socket._socketobject if hasattr(socket, "_socketobject")
+                 else socket.socket)(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(0.1)
+            s.connect((host, port))
+            # Tor responds uniquely to HTTP-like requests
+            s.send(b"GET\n")
+            if b"Tor is not an HTTP Proxy" in s.recv(1024):
+                return (host, port)
+        except socket.error:
+            pass
+    return None
+
 
 def get_block_header(rpc, blockhash, raw=False):
     rpc_head = rpc.call("getblockheader", [blockhash])
@@ -308,6 +329,7 @@ class ElectrumProtocol(object):
                         self.logger.info("Tor detected at " + str(tor_hostport)
                             + ". Broadcasting through tor.")
                         broadcast_method = "tor"
+                        self.tor_hostport = tor_hostport
                     else:
                         self.logger.info("Could not detect tor. Broadcasting "
                             + "through own node.")
@@ -331,8 +353,8 @@ class ElectrumProtocol(object):
                     elif chaininfo["chain"] == "regtest":
                         network = "regtest"
                     self.logger.debug("broadcasting to network: " + network)
-                    peertopeer.tor_broadcast_tx(txhex, tor_hostport, network,
-                        self.rpc, logger)
+                    tor_broadcast_tx(txhex, self.tor_hostport, network,
+                        self.rpc, self.logger)
                 elif broadcast_method.startswith("system "):
                     with tempfile.NamedTemporaryFile() as fd:
                         system_line = broadcast_method[7:].replace("%s",

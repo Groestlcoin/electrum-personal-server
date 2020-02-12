@@ -8,6 +8,7 @@ import logging
 import tempfile
 import platform
 import json
+from json.decoder import JSONDecodeError
 from configparser import RawConfigParser, NoSectionError, NoOptionError
 from ipaddress import ip_network, ip_address
 
@@ -15,7 +16,6 @@ from electrumpersonalserver.server.jsonrpc import JsonRpc, JsonRpcError
 import electrumpersonalserver.server.hashes as hashes
 import electrumpersonalserver.server.deterministicwallet as deterministicwallet
 import electrumpersonalserver.server.transactionmonitor as transactionmonitor
-import electrumpersonalserver.server.peertopeer as peertopeer
 from electrumpersonalserver.server.electrumprotocol import (
     SERVER_VERSION_NUMBER,
     ElectrumProtocol,
@@ -27,24 +27,6 @@ from electrumpersonalserver.server.electrumprotocol import (
 ##python has demented rules for variable scope, so these
 ## global variables are actually mutable lists
 bestblockhash = [None]
-
-def get_tor_hostport():
-    # Probable ports for Tor to listen at
-    host = "127.0.0.1"
-    ports = [9050, 9150]
-    for port in ports:
-        try:
-            s = (socket._socketobject if hasattr(socket, "_socketobject")
-                 else socket.socket)(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(0.1)
-            s.connect((host, port))
-            # Tor responds uniquely to HTTP-like requests
-            s.send(b"GET\n")
-            if b"Tor is not an HTTP Proxy" in s.recv(1024):
-                return (host, port)
-        except socket.error:
-            pass
-    return None
 
 def on_heartbeat_listening(txmonitor):
     logger = logging.getLogger('ELECTRUMPERSONALSERVER')
@@ -96,6 +78,7 @@ def run_electrum_server(rpc, txmonitor, config):
     poll_interval_connected = int(config.get("groestlcoin-rpc",
         "poll_interval_connected"))
     certfile, keyfile = get_certs(config)
+    logger.info('using cert: {}, key: {}'.format(certfile, keyfile))
     disable_mempool_fee_histogram = config.getboolean("electrum-server",
         "disable_mempool_fee_histogram", fallback=False)
     broadcast_method = config.get("electrum-server", "broadcast_method",
@@ -150,12 +133,12 @@ def run_electrum_server(rpc, txmonitor, config):
                         line = recv_buffer[:lb].rstrip()
                         recv_buffer = recv_buffer[lb + 1:]
                         lb = recv_buffer.find(b'\n')
-                        line = line.decode("utf-8")
-                        logger.debug("=> " + line)
                         try:
+                            line = line.decode("utf-8")
                             query = json.loads(line)
-                        except json.decoder.JSONDecodeError as e:
+                        except (UnicodeDecodeError, JSONDecodeError) as e:
                             raise IOError(repr(e))
+                        logger.debug("=> " + line)
                         protocol.handle_query(query)
                 except socket.timeout:
                     on_heartbeat_connected(rpc, txmonitor, protocol)
@@ -292,7 +275,6 @@ def get_certs(config):
         certfile = resource_filename('electrumpersonalserver', __certfile__)
         keyfile = resource_filename('electrumpersonalserver', __keyfile__)
         if os.path.exists(certfile) and os.path.exists(keyfile):
-            logger.debug('using cert: {}, key: {}'.format(certfile, keyfile))
             return certfile, keyfile
         else:
             raise ValueError('invalid cert: {}, key: {}'.format(
@@ -369,7 +351,8 @@ def main():
         return
     logger = logging.getLogger('ELECTRUMPERSONALSERVER')
     logger, logfilename = logger_config(logger, config)
-    logger.info('Starting Electrum Personal Server')
+    logger.info('Starting Electrum Personal Server v{}'.format(
+        SERVER_VERSION_NUMBER))
     logger.info('Logging to ' + logfilename)
     try:
         rpc_u = config.get("groestlcoin-rpc", "rpc_user")
